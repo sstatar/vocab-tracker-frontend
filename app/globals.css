@@ -1,26 +1,59 @@
+/* 1. นำเข้า Tailwind CSS v4 */
 @import "tailwindcss";
 
+/* 2. ผูกตัวแปร CSS เข้ากับระบบของ Tailwind เพื่อให้เรียกใช้คลาสได้ */
+@theme {
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  
+  --color-success: var(--success);
+  --color-success-hover: var(--success-hover);
+  
+  --color-danger: var(--danger);
+  --color-danger-hover: var(--danger-hover);
+
+  --color-background: var(--bg-color);
+  --color-foreground: var(--text-color);
+  --color-muted: var(--text-muted);
+}
+
+/* 3. โหมดสว่าง (Light Mode) */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg-color: #f8fafc; /* พื้นหลังเทาอ่อน (Slate 50) */
+  --text-color: #0f172a; /* ตัวหนังสือสีเข้ม (Slate 900) */
+  --text-muted: #64748b; /* ตัวหนังสือสีรอง (Slate 500) */
+
+  --primary: #8b5cf6; /* ม่วงหลัก (Violet 500) */
+  --primary-hover: #7c3aed; /* ม่วงเข้มขึ้นตอน Hover (Violet 600) */
+  
+  --success: #10b981; /* เขียวหลัก (Emerald 500) */
+  --success-hover: #059669; /* เขียวเข้มขึ้นตอน Hover (Emerald 600) */
+  
+  --danger: #ef4444; /* แดงหลัก (Red 500) */
+  --danger-hover: #dc2626; /* แดงเข้มขึ้นตอน Hover (Red 600) */
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* 4. โหมดมืด (Dark Mode) */
+.dark {
+  --bg-color: #0f172a; /* พื้นหลังน้ำเงินเข้ม (Slate 900) */
+  --text-color: #f8fafc; /* ตัวหนังสือสีสว่าง (Slate 50) */
+  --text-muted: #94a3b8; /* ตัวหนังสือสีรอง (Slate 400) */
+
+  --primary: #a855f7; /* ม่วงสว่างขึ้นให้เด่นบนพื้นดำ (Purple 500) */
+  --primary-hover: #c084fc; /* ม่วงสว่างมากตอน Hover (Purple 400) */
+  
+  --success: #34d399; /* เขียวสว่าง (Emerald 400) */
+  --success-hover: #10b981; /* เขียวเข้มขึ้นนิด (Emerald 500) */
+  
+  --danger: #f87171; /* แดงสว่าง (Red 400) */
+  --danger-hover: #ef4444; /* แดงเข้มขึ้นนิด (Red 500) */
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* 5. บังคับใช้สีกับโครงสร้างหลัก */
+@layer base {
+  body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    transition: background-color 0.3s ease, color 0.3s ease;
   }
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
 }

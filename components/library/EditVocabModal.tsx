@@ -1,0 +1,114 @@
+"use client";
+
+import { type Vocab } from "@/types";
+
+interface EditVocabModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  vocab: Vocab; 
+}
+
+export function EditVocabModal({ isOpen, onClose, vocab }: EditVocabModalProps) {
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm transition-opacity">
+      <div className="bg-background w-full max-w-md rounded-[2rem] p-6 sm:p-8 shadow-2xl border border-muted/20 relative animate-in fade-in zoom-in-95 duration-200">
+        
+        {/* ปุ่มปิด (X) */}
+        <button 
+          onClick={onClose}
+          className="absolute top-6 right-6 text-muted hover:text-danger transition-colors bg-muted/10 hover:bg-danger/10 p-2 rounded-full"
+        >
+          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+
+        <h2 className="text-2xl font-bold text-primary mb-6">Edit Word</h2>
+
+        <form className="space-y-4">
+          
+          {/* คำศัพท์ */}
+          <div>
+            <label className="block text-sm font-medium text-muted mb-1">Vocabulary</label>
+            <input 
+              type="text" 
+              defaultValue={vocab.word} // ใช้ defaultValue เพื่อดึงข้อมูลเดิมมาใส่
+              className="w-full px-4 py-3 bg-muted/5 border border-muted/20 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all font-bold text-foreground"
+              required
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            {/* ความหมาย */}
+            <div>
+              <label className="block text-sm font-medium text-muted mb-1">Meaning</label>
+              <input 
+                type="text" 
+                defaultValue={vocab.meaning}
+                className="w-full px-4 py-3 bg-muted/5 border border-muted/20 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all text-foreground"
+                required
+              />
+            </div>
+            
+            {/* ชนิดของคำ */}
+            <div>
+              <label className="block text-sm font-medium text-muted mb-1">Part of Speech</label>
+              <select 
+                defaultValue={vocab.partOfSpeech}
+                className="w-full px-4 py-3 bg-muted/5 border border-muted/20 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all text-foreground"
+              >
+                <option value="n.">Noun (n.)</option>
+                <option value="v.">Verb (v.)</option>
+                <option value="adj.">Adjective (adj.)</option>
+                <option value="adv.">Adverb (adv.)</option>
+              </select>
+            </div>
+          </div>
+
+          {/* ประโยคตัวอย่าง */}
+          <div>
+            <label className="block text-sm font-medium text-muted mb-1">Example Sentence</label>
+            <textarea 
+              defaultValue={vocab.example || ""}
+              rows={3}
+              className="w-full px-4 py-3 bg-muted/5 border border-muted/20 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all resize-none text-foreground"
+            ></textarea>
+          </div>
+
+          {/* ปรับสถานะ (เพิ่มมาเฉพาะโหมดแก้ไข) */}
+          <div>
+            <label className="block text-sm font-medium text-muted mb-1">Status</label>
+            <select 
+              defaultValue={vocab.status}
+              className="w-full px-4 py-3 bg-background border border-muted/20 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all text-foreground font-medium"
+            >
+              <option value="Learning">Learning (กำลังเรียน)</option>
+              <option value="Needs Review">Needs Review (ต้องทบทวน)</option>
+              <option value="Mastered">Mastered (จำได้แล้ว)</option>
+            </select>
+          </div>
+
+          <div className="pt-4 flex gap-3">
+            <button 
+              type="button" 
+              onClick={onClose}
+              className="flex-1 px-4 py-3 bg-muted/10 text-muted font-bold rounded-xl hover:bg-muted/20 transition-colors"
+            >
+              Cancel
+            </button>
+            <button 
+              type="submit" 
+              onClick={(e) => { e.preventDefault(); onClose(); }} 
+              className="flex-1 px-4 py-3 bg-primary text-white font-bold rounded-xl hover:bg-primary-hover shadow-lg transition-all"
+            >
+              Save Changes
+            </button>
+          </div>
+        </form>
+
+      </div>
+    </div>
+  );
+}
