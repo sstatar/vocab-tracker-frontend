@@ -1,6 +1,13 @@
 // src/lib/vocab.service.ts
 import { type Vocab } from "@/types"; // ดึง Type กลางที่เราสร้างไว้มาใช้
 
+export interface CreateVocabData {
+    word: string;
+    meaning: string;
+    partOfSpeech: string;
+    example?: string;
+}
+
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api";
 
 export const vocabService = {
@@ -33,6 +40,28 @@ export const vocabService = {
         }
 
         // 5. ถ้าสำเร็จ ส่งข้อมูลคำศัพท์กลับไปให้คนเรียกใช้ (Hook)
+        return data;
+    },
+
+    createVocab: async (vocabData: CreateVocabData) => {
+        const token = localStorage.getItem("token");
+        if (!token) throw new Error("No authentication token found. Please login.");
+
+        const response = await fetch(`${API_URL}/vocab`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}` // ขาดไม่ได้เลย!
+            },
+            body: JSON.stringify(vocabData),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error || "Failed to create vocabulary");
+        }
+
         return data;
     }
 };
