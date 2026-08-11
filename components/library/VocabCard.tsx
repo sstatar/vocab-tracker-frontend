@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { EditVocabModal } from "./EditVocabModal";
 import { type Vocab } from "@/types"; // เปลี่ยน path ชี้ไปที่ไฟล์ type กลางของคุณ
+import { vocabService } from "@/lib/vocab.service"; // 🌟 นำเข้า Service
+import { useSWRConfig } from "swr";
 
 // เปลี่ยนมารับค่าจาก type Vocab หลัก
 interface VocabCardProps {
@@ -11,6 +13,47 @@ interface VocabCardProps {
 
 export function VocabCard({ vocab }: VocabCardProps) {
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+
+    const [isUpdating, setIsUpdating] = useState(false);
+    const [isDeleting, setIsDeleting] = useState(false);
+    const { mutate } = useSWRConfig();
+
+    // 🌟 2. ฟังก์ชันจัดการเมื่อกดปุ่ม Mark as Mastered
+    const handleMarkAsMastered = async () => {
+        setIsUpdating(true);
+        try {
+            // ส่งแค่สถานะ MASTERED ไปอัปเดต โดยใช้ id ของการ์ดใบนี้
+            await vocabService.updateVocab(vocab.id, { status: "MASTERED" });
+
+            // สั่ง SWR โหลดข้อมูลใหม่ หน้าจอจะเปลี่ยนสีทันที
+            mutate("/api/vocab");
+        } catch (error) {
+            // โชว์แจ้งเตือนง่ายๆ เพราะเป็นแค่ปุ่ม Action เร็วๆ
+            alert("Failed to update status. Please try again.");
+        } finally {
+            setIsUpdating(false);
+        }
+    };
+
+    const handleDelete = async () => {
+        // ใช้หน้าต่าง Confirm เบสิกของเบราว์เซอร์ เพื่อถามความมั่นใจก่อนลบ
+        const isConfirm = window.confirm(
+            `Are you sure you want to delete the word "${vocab.word}"?`,
+        );
+
+        // ถ้าผู้ใช้กด Cancel (ไม่ลบ) ก็ให้จบฟังก์ชันไปเลย
+        if (!isConfirm) return;
+
+        setIsDeleting(true);
+        try {
+            await vocabService.deleteVocab(vocab.id);
+            // พอลบสำเร็จ ก็ตะโกนบอก SWR ให้ดึงข้อมูลมาใหม่ (การ์ดใบนี้จะหายไปจากหน้าจออัตโนมัติ)
+            mutate("/api/vocab");
+        } catch (error) {
+            alert("Failed to delete word. Please try again.");
+            setIsDeleting(false); // ปิดสถานะโหลดเฉพาะตอนที่พัง (ถ้าสำเร็จการ์ดจะโดนทำลายไปเลย)
+        }
+    };
 
     let statusColor = "bg-blue-500";
     if (vocab.status === "Mastered") statusColor = "bg-green-500";
@@ -53,9 +96,14 @@ export function VocabCard({ vocab }: VocabCardProps) {
                 </div>
 
                 <div className="mt-4 pt-3 border-t border-muted/10 flex justify-end gap-3 md:opacity-0 group-hover:opacity-100 transition-opacity">
-                    {vocab.status !== "Mastered" && (
-                        <button className="text-xs font-medium text-green-600 hover:underline transition-all">
-                            Mark as Mastered
+                    {vocab.status !== "MASTERED" && (
+                        <button
+                            onClick={handleMarkAsMastered}
+                            disabled={isUpdating} // ป้องกันการกดซ้ำรัวๆ
+                            className="text-xs font-medium text-green-600 hover:underline transition-all disabled:opacity-50 disabled:no-underline"
+                        >
+                            {/* ถ้ากำลังโหลดอยู่ ให้โชว์ข้อความ Updating... */}
+                            {isUpdating ? "Updating..." : "Mark as Mastered"}
                         </button>
                     )}
                     <div className="flex gap-2">
@@ -79,11 +127,14 @@ export function VocabCard({ vocab }: VocabCardProps) {
                             </svg>
                         </button>
                         <button
-                            className="text-muted hover:text-danger transition-colors"
+                            onClick={handleDelete}
+                            disabled={isDeleting} // ป้องกันคนกดถังขยะรัวๆ
+                            className={`transition-colors ${isDeleting ? "text-muted/50" : "text-muted hover:text-danger"}`}
                             aria-label="Delete Word"
                         >
+                            {/* ถ้ากำลังลบ ให้เปลี่ยนเป็นไอคอนโหลดติ้วๆ หรือแค่ทำให้ปุ่มจางลง ในที่นี้เราทำให้จางลงก็พอครับ */}
                             <svg
-                                className="w-4 h-4"
+                                className={`w-4 h-4 ${isDeleting ? "animate-pulse" : ""}`}
                                 fill="none"
                                 viewBox="0 0 24 24"
                                 stroke="currentColor"

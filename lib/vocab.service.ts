@@ -9,11 +9,11 @@ export interface CreateVocabData {
 }
 
 export interface UpdateVocabData {
-  word?: string;
-  meaning?: string;
-  partOfSpeech?: string;
-  example?: string;
-  status?: string; // Edit เปลี่ยน status ได้
+    word?: string;
+    meaning?: string;
+    partOfSpeech?: string;
+    example?: string;
+    status?: string; // Edit เปลี่ยน status ได้
 }
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api";
@@ -74,25 +74,46 @@ export const vocabService = {
     },
 
     updateVocab: async (id: string, vocabData: UpdateVocabData) => {
-    const token = localStorage.getItem("token");
-    if (!token) throw new Error("No authentication token found. Please login.");
+        const token = localStorage.getItem("token");
+        if (!token) throw new Error("No authentication token found. Please login.");
 
-    // ต้องแนบ ID ไปที่ URL ด้วย
-    const response = await fetch(`${API_URL}/vocab/${id}`, {
-      method: "PUT", // หรือ PATCH ตามที่ Backend คุณกำหนดไว้
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`
-      },
-      body: JSON.stringify(vocabData),
-    });
+        // ต้องแนบ ID ไปที่ URL ด้วย
+        const response = await fetch(`${API_URL}/vocab/${id}`, {
+            method: "PUT", // หรือ PATCH ตามที่ Backend คุณกำหนดไว้
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            },
+            body: JSON.stringify(vocabData),
+        });
 
-    const data = await response.json();
+        const data = await response.json();
 
-    if (!response.ok) {
-      throw new Error(data.error || "Failed to update vocabulary");
+        if (!response.ok) {
+            throw new Error(data.error || "Failed to update vocabulary");
+        }
+
+        return data;
+    },
+
+    deleteVocab: async (id: string) => {
+        const token = localStorage.getItem("token");
+        if (!token) throw new Error("No authentication token found. Please login.");
+
+        const response = await fetch(`${API_URL}/vocab/${id}`, {
+            method: "DELETE",
+            headers: {
+                "Authorization": `Bearer ${token}` // การลบมักไม่ต้องส่ง Content-Type ไปด้วย ส่งแค่ Token ก็พอครับ
+            },
+        });
+
+        // เช็กว่าถ้าลบไม่สำเร็จให้โยน Error
+        if (!response.ok) {
+            // บางที Backend อาจจะไม่ได้ส่ง JSON กลับมาตอน Error เลยต้องใช้ .catch ช่วยดัก
+            const data = await response.json().catch(() => ({}));
+            throw new Error(data.error || "Failed to delete vocabulary");
+        }
+
+        return true; // ลบสำเร็จ
     }
-
-    return data;
-  }
 };
