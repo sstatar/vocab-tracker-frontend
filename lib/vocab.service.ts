@@ -8,6 +8,14 @@ export interface CreateVocabData {
     example?: string;
 }
 
+export interface UpdateVocabData {
+  word?: string;
+  meaning?: string;
+  partOfSpeech?: string;
+  example?: string;
+  status?: string; // Edit เปลี่ยน status ได้
+}
+
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api";
 
 export const vocabService = {
@@ -63,5 +71,28 @@ export const vocabService = {
         }
 
         return data;
+    },
+
+    updateVocab: async (id: string, vocabData: UpdateVocabData) => {
+    const token = localStorage.getItem("token");
+    if (!token) throw new Error("No authentication token found. Please login.");
+
+    // ต้องแนบ ID ไปที่ URL ด้วย
+    const response = await fetch(`${API_URL}/vocab/${id}`, {
+      method: "PUT", // หรือ PATCH ตามที่ Backend คุณกำหนดไว้
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      },
+      body: JSON.stringify(vocabData),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || "Failed to update vocabulary");
     }
+
+    return data;
+  }
 };
