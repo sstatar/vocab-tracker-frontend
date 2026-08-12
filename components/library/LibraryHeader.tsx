@@ -3,7 +3,14 @@
 import { useState } from "react";
 import { AddVocabModal } from "./AddVocabModal";
 
-export function LibraryHeader() {
+interface LibraryHeaderProps {
+  searchQuery: string;
+  onSearchChange: (value: string) => void;
+}
+
+export function LibraryHeader({ searchQuery, onSearchChange }: LibraryHeaderProps) {
+
+  
   // สร้าง State สำหรับเปิด/ปิด Modal (ค่าเริ่มต้นคือปิด = false)
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -23,7 +30,9 @@ export function LibraryHeader() {
             </svg>
             <input 
               type="text" 
-              placeholder="Search..." 
+              placeholder="Search words, meanings..." // แอบเปลี่ยน placeholder นิดนึงให้ผู้ใช้รู้ว่าหาความหมายได้ด้วย
+              value={searchQuery} // 🌟 3. ผูกค่า State
+              onChange={(e) => onSearchChange(e.target.value)} // 🌟 4. ดักจับตอนพิมพ์
               className="w-full pl-9 pr-4 py-2 bg-background border border-muted/20 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-primary transition-all"
             />
           </div>

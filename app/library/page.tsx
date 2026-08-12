@@ -8,20 +8,32 @@ import { useVocabs } from "@/hooks/useVocabs";
 
 export default function LibraryPage() {
     const { vocabs, isLoading, error } = useVocabs();
-
     const [activeTab, setActiveTab] = useState<TabStatus>("All Words");
+    const [searchQuery, setSearchQuery] = useState("");
 
     const filteredVocabs = vocabs.filter((vocab) => {
-        if (activeTab === "All Words") return true;
-        
-        // 🌟 Trick: แปลงชื่อ Tab เช่น "Needs Review" ให้กลายเป็น "NEEDS_REVIEW" เพื่อให้ตรงกับใน Database
+        // 1. Filter by active tab
         const formattedTab = activeTab.toUpperCase().replace(" ", "_");
-        return vocab.status === formattedTab; 
+        const matchesTab =
+            activeTab === "All Words" || vocab.status === formattedTab;
+
+        // 2. Filter by search query (case-insensitive)
+        if (!searchQuery.trim()) return matchesTab;
+
+        const query = searchQuery.toLowerCase();
+        const matchesSearch =
+            vocab.word.toLowerCase().includes(query) ||
+            vocab.meaning.toLowerCase().includes(query);
+
+        return matchesTab && matchesSearch;
     });
 
     return (
         <div className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8 space-y-8">
-            <LibraryHeader />
+            <LibraryHeader
+                searchQuery={searchQuery}
+                onSearchChange={setSearchQuery}
+            />
 
             <LibraryTabs activeTab={activeTab} onTabChange={setActiveTab} />
 
@@ -30,7 +42,7 @@ export default function LibraryPage() {
                     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
                 </div>
             )}
-            
+
             {error && (
                 <div className="p-4 text-center text-danger bg-danger/10 rounded-lg border border-danger/20">
                     <p>Error: {error}</p>
@@ -41,12 +53,19 @@ export default function LibraryPage() {
                 <>
                     {filteredVocabs.length === 0 ? (
                         <div className="text-center py-20 text-muted">
-                            {/* เปลี่ยน UI เป็นภาษาอังกฤษทั้งหมด */}
-                            <p className="text-xl">No words found in this category.</p>
-                            
-                            {/* แถม: ถ้าอยู่หน้า All Words แล้วไม่มีคำศัพท์เลย ให้แนะนำผู้ใช้สักนิด */}
-                            {activeTab === "All Words" && (
-                                <p className="mt-2 text-sm">Click &quot;Add New Word&quot; to get started!</p>
+                            <p className="text-xl">
+                                {/* Dynamic empty state message */}
+                                {searchQuery
+                                    ? `No results found for "${searchQuery}"`
+                                    : "No words found in this category."}
+                            </p>
+
+                            {/* Onboarding hint for new users */}
+                            {activeTab === "All Words" && !searchQuery && (
+                                <p className="mt-2 text-sm">
+                                    Click &quot;Add New Word&quot; to get
+                                    started!
+                                </p>
                             )}
                         </div>
                     ) : (
