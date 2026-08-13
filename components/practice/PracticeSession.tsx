@@ -6,6 +6,7 @@ import { PracticeHeader } from "@/components/practice/PracticeHeader";
 import { Flashcard } from "@/components/practice/Flashcard";
 import { PracticeSummary } from "@/components/practice/PracticeSummary";
 import { type Vocab } from "@/types";
+import { vocabService } from "@/lib/vocab.service";
 
 interface PracticeSessionProps {
     vocabs: Vocab[];
@@ -53,8 +54,18 @@ export function PracticeSession({ vocabs, mode }: PracticeSessionProps) {
 
     const currentWord = practiceWords[currentIndex];
 
-    const handleNextWord = (gotIt: boolean) => {
+    const handleNextWord = async (gotIt: boolean) => {
         if (gotIt) setRememberedCount((prev) => prev + 1);
+
+        const newStatus = gotIt ? "MASTERED" : "NEEDS_REVIEW";
+
+        try {
+            await vocabService.updateVocab(currentWord.id, {
+                status: newStatus,
+            });
+        } catch (error) {
+            console.error("Failed to update vocabulary status:", error);
+        }
 
         if (currentIndex + 1 < practiceWords.length) {
             setCurrentIndex((prev) => prev + 1);
