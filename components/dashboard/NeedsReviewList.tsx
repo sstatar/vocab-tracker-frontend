@@ -4,9 +4,12 @@ interface ReviewItem {
   meaning: string;
 }
 
+import {Vocab} from "@/types/index";
+
 interface NeedsReviewListProps {
-  items: ReviewItem[];
+  items: Vocab[];
 }
+
 
 export function NeedsReviewList({ items }: NeedsReviewListProps) {
   return (

@@ -13,4 +13,13 @@ export interface Vocab {
   status: string;
   createdAt: string;
   userId: string;
+  updatedAt: string;
+}
+
+interface VocabStats {
+  total: number;
+  mastered: number;
+  learning: number;
+  needsReview: number;
+  progressPercentage: number;
 }

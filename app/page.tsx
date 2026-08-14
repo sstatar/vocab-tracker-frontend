@@ -1,3 +1,5 @@
+"use client";
+
 import { DailyGoalCard } from "@/components/dashboard/DailyGoalCard";
 import { StatCards } from "@/components/dashboard/StatCards";
 import { StreakCard } from "@/components/dashboard/StreakCard";
@@ -5,32 +7,56 @@ import { NeedsReviewList } from "@/components/dashboard/NeedsReviewList";
 import { RecentActivityList } from "@/components/dashboard/RecentActivityList";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 
-// 1. จำลองข้อมูล (Mock Data) สำหรับ Phase 1
-const mockStats = {
-    totalVocab: 125,
-    mastered: 45,
-    learning: 80,
-    streak: 5,
-};
-
-const mockDailyGoal = {
-    reviewed: 12,
-    target: 20,
-};
-
-const mockNeedsReview = [
-    { id: 1, word: "Abundant", meaning: "มากมาย, อุดมสมบูรณ์" },
-    { id: 2, word: "Deteriorate", meaning: "เสื่อมสภาพ, แย่ลง" },
-    { id: 3, word: "Crucial", meaning: "สำคัญมาก, วิกฤต" },
-];
-
-const mockRecentActivity = [
-    { id: 4, word: "Fascinate", addedAt: "2 hours ago" },
-    { id: 5, word: "Obscure", addedAt: "5 hours ago" },
-    { id: 6, word: "Versatile", addedAt: "1 day ago" },
-];
+// 🌟 1. Import Hooks ที่เราสร้างไว้
+import { useVocabStats } from "@/hooks/useVocabStats";
+import { useVocabs } from "@/hooks/useVocabs";
 
 export default function DashboardPage() {
+    // 🌟 2. เรียกใช้ข้อมูลจาก Backend
+    const { stats, isLoading: isStatsLoading } = useVocabStats();
+    const { vocabs, isLoading: isVocabsLoading } = useVocabs();
+
+    // 🌟 3. โชว์ Loading ระหว่างรอข้อมูล
+    if (isStatsLoading || isVocabsLoading) {
+        return (
+            <ProtectedRoute>
+                <div className="min-h-screen flex items-center justify-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+                </div>
+            </ProtectedRoute>
+        );
+    }
+
+    // --- เตรียมข้อมูลของจริงก่อนส่งให้ UI ---
+
+    // Fallback เผื่อข้อมูลยังมาไม่ถึง
+    const currentStats = stats || { total: 0, mastered: 0, learning: 0 };
+
+    // คัดเฉพาะคำที่ต้องทบทวน 5 คำแรก
+    const realNeedsReview = vocabs
+        .filter((v) => v.status === "NEEDS_REVIEW")
+        .slice(0, 5);
+
+    // เรียงคำศัพท์ล่าสุด 5 คำ (ดูจาก createdAt)
+    const realRecentActivity = [...vocabs]
+        .sort((a, b) => {
+            const timeA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+            const timeB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+            return timeB - timeA; // เรียงจากใหม่ไปเก่า
+        })
+        .slice(0, 5)
+        .map((v) => ({
+            id: v.id,
+            word: v.word,
+            // เช็กว่ามี createdAt ไหม ถ้ามีก็แปลงวันที่ ถ้าไม่มีก็ใส่คำว่า Unknown แทน
+            addedAt: v.createdAt
+                ? new Date(v.createdAt).toLocaleDateString()
+                : "Unknown date",
+        }));
+    // (ส่วนนี้จำลองไว้ก่อน เพราะต้องไปสร้างระบบเก็บ History ใน DB อีกตารางในอนาคต)
+    const mockDailyGoal = { reviewed: 0, target: 20 };
+    const mockStreak = 1;
+
     return (
         <ProtectedRoute>
             <div className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8 space-y-10">
@@ -56,24 +82,24 @@ export default function DashboardPage() {
 
                 {/* --- Section 2: Grid Layout --- */}
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    {/* คอลัมน์ซ้าย (Main Area) */}
+                    {/* คอลัมน์ซ้าย */}
                     <div className="lg:col-span-2 space-y-12">
                         <DailyGoalCard
                             reviewed={mockDailyGoal.reviewed}
                             target={mockDailyGoal.target}
                         />
                         <StatCards
-                            totalVocab={mockStats.totalVocab}
-                            mastered={mockStats.mastered}
-                            learning={mockStats.learning}
+                            totalVocab={currentStats.total}
+                            mastered={currentStats.mastered}
+                            learning={currentStats.learning}
                         />
                     </div>
 
-                    {/* คอลัมน์ขวา (Right Sidebar) */}
+                    {/* คอลัมน์ขวา */}
                     <div className="space-y-6">
-                        <StreakCard streak={mockStats.streak} />
-                        <NeedsReviewList items={mockNeedsReview} />
-                        <RecentActivityList items={mockRecentActivity} />
+                        <StreakCard streak={mockStreak} />
+                        <NeedsReviewList items={realNeedsReview} />
+                        <RecentActivityList items={realRecentActivity} />
                     </div>
                 </div>
             </div>

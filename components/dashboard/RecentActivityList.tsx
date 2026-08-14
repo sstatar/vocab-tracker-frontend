@@ -1,11 +1,11 @@
-interface ActivityItem {
-  id: number;
+export interface RecentActivityItem {
+  id: string;
   word: string;
   addedAt: string;
 }
 
 interface RecentActivityListProps {
-  items: ActivityItem[];
+  items: RecentActivityItem[]; // 2. เปลี่ยนมาใช้ Type ตัวใหม่
 }
 
 export function RecentActivityList({ items }: RecentActivityListProps) {

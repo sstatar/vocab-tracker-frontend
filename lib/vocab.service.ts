@@ -98,5 +98,20 @@ export const vocabService = {
         });
 
         return handleResponse(response);
+    },
+
+    getVocabStats: async () => {
+        const token = localStorage.getItem("token");
+        if (!token) throw new Error("No authentication token found. Please login.");
+
+        const response = await fetch(`${API_URL}/vocab/stats`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            },
+        });
+
+        return handleResponse(response);
     }
 };
