@@ -30,7 +30,7 @@ export function useLogin() {
       localStorage.setItem("token", data.token);
 
       // 3. พาผู้ใช้ไปหน้า Dashboard แบบหล่อๆ
-      router.push("/dashboard");
+      router.push("/");
 
     } catch (err) {
       if (err instanceof Error) {

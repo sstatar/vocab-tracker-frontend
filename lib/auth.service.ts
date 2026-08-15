@@ -45,7 +45,7 @@ export const authService = {
       throw new Error(data.error || "Login failed");
     }
 
-    return data; // ดาต้าก้อนนี้จะมี Token แนบมาด้วย!
+    return data;
   }
 
 
