@@ -16,10 +16,14 @@ export interface Vocab {
   updatedAt: string;
 }
 
-interface VocabStats {
+export interface VocabStats {
   total: number;
   mastered: number;
   learning: number;
   needsReview: number;
   progressPercentage: number;
+  userName: string;
+  streak: number;
+  dailyGoal: number;
+  reviewedToday: number;
 }

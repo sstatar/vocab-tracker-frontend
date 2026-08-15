@@ -113,5 +113,25 @@ export const vocabService = {
         });
 
         return handleResponse(response);
-    }
+    },
+
+    reviewVocab: async (id: string, status: "MASTERED" | "LEARNING" | "NEEDS_REVIEW") => {
+        const token = localStorage.getItem("token");
+        if (!token) throw new Error("No token found");
+
+        const response = await fetch(`${API_URL}/vocab/${id}/review`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ status }),
+        });
+
+        if (!response.ok) {
+            throw new Error("Failed to review vocabulary");
+        }
+
+        return response.json();
+    },
 };

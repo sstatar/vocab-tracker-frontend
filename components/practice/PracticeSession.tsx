@@ -60,11 +60,12 @@ export function PracticeSession({ vocabs, mode }: PracticeSessionProps) {
         const newStatus = gotIt ? "MASTERED" : "NEEDS_REVIEW";
 
         try {
-            await vocabService.updateVocab(currentWord.id, {
-                status: newStatus,
-            });
+            await vocabService.reviewVocab(
+                currentWord.id,
+                newStatus as "MASTERED" | "LEARNING" | "NEEDS_REVIEW",
+            );
         } catch (error) {
-            console.error("Failed to update vocabulary status:", error);
+            console.error("Failed to review vocabulary:", error);
         }
 
         if (currentIndex + 1 < practiceWords.length) {
