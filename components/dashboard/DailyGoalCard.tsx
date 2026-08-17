@@ -6,7 +6,8 @@ interface DailyGoalCardProps {
 }
 
 export function DailyGoalCard({ reviewed, target }: DailyGoalCardProps) {
-    const progressPercent = Math.round((reviewed / target) * 100);
+    const progressPercent =
+        target > 0 ? Math.round((reviewed / target) * 100) : 0;
 
     return (
         <div className="bg-primary rounded-[2rem] p-8 sm:p-10 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.3)] relative overflow-hidden text-white">
