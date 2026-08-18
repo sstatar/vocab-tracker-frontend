@@ -12,7 +12,8 @@ export interface UpdateVocabData {
     meaning?: string;
     partOfSpeech?: string;
     example?: string;
-    status?: string;
+    status?: 'LEARNING' | 'MASTERED';
+
 }
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api";
@@ -115,7 +116,7 @@ export const vocabService = {
         return handleResponse(response);
     },
 
-    reviewVocab: async (id: string, status: "MASTERED" | "LEARNING" | "NEEDS_REVIEW") => {
+    reviewVocab: async (id: string, status: "MASTERED" | "LEARNING", isMistake: boolean = false) => {
         const token = localStorage.getItem("token");
         if (!token) throw new Error("No token found");
 
@@ -125,7 +126,7 @@ export const vocabService = {
                 "Content-Type": "application/json",
                 Authorization: `Bearer ${token}`,
             },
-            body: JSON.stringify({ status }),
+            body: JSON.stringify({ status, isMistake }),
         });
 
         if (!response.ok) {

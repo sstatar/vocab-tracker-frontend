@@ -13,12 +13,19 @@ export default function LibraryPage() {
     const [searchQuery, setSearchQuery] = useState("");
 
     const filteredVocabs = vocabs.filter((vocab) => {
-        // 1. Filter by active tab
-        const formattedTab = activeTab.toUpperCase().replace(" ", "_");
-        const matchesTab =
-            activeTab === "All Words" || vocab.status === formattedTab;
+        let matchesTab = false;
 
-        // 2. Filter by search query (case-insensitive)
+        if (activeTab === "All Words") {
+            matchesTab = true;
+        } else if (activeTab === "Needs Review") {
+            matchesTab =
+                vocab.status === "LEARNING" && (vocab.mistakeCount || 0) > 0;
+        } else {
+            matchesTab =
+                vocab.status ===
+                (activeTab.toUpperCase() as "LEARNING" | "MASTERED");
+        }
+
         if (!searchQuery.trim()) return matchesTab;
 
         const query = searchQuery.toLowerCase();
@@ -56,13 +63,11 @@ export default function LibraryPage() {
                         {filteredVocabs.length === 0 ? (
                             <div className="text-center py-20 text-muted">
                                 <p className="text-xl">
-                                    {/* Dynamic empty state message */}
                                     {searchQuery
                                         ? `No results found for "${searchQuery}"`
                                         : "No words found in this category."}
                                 </p>
 
-                                {/* Onboarding hint for new users */}
                                 {activeTab === "All Words" && !searchQuery && (
                                     <p className="mt-2 text-sm">
                                         Click &quot;Add New Word&quot; to get

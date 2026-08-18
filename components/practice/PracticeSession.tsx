@@ -20,7 +20,9 @@ export function PracticeSession({ vocabs, mode }: PracticeSessionProps) {
         let filtered = vocabs;
 
         if (mode === "needs_review") {
-            filtered = vocabs.filter((v) => v.status === "NEEDS_REVIEW");
+            filtered = vocabs.filter(
+                (v) => v.status === "LEARNING" && (v.mistakeCount || 0) > 0,
+            );
         } else if (mode === "learning") {
             filtered = vocabs.filter((v) => v.status === "LEARNING");
         }
@@ -57,12 +59,14 @@ export function PracticeSession({ vocabs, mode }: PracticeSessionProps) {
     const handleNextWord = async (gotIt: boolean) => {
         if (gotIt) setRememberedCount((prev) => prev + 1);
 
-        const newStatus = gotIt ? "MASTERED" : "NEEDS_REVIEW";
+        const statusToUpdate = gotIt ? "MASTERED" : "LEARNING";
+        const isMistake = !gotIt;
 
         try {
             await vocabService.reviewVocab(
                 currentWord.id,
-                newStatus as "MASTERED" | "LEARNING" | "NEEDS_REVIEW",
+                statusToUpdate,
+                isMistake,
             );
         } catch (error) {
             console.error("Failed to review vocabulary:", error);

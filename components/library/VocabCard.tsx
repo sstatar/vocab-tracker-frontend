@@ -2,11 +2,10 @@
 
 import { useState } from "react";
 import { EditVocabModal } from "./EditVocabModal";
-import { type Vocab } from "@/types"; // เปลี่ยน path ชี้ไปที่ไฟล์ type กลางของคุณ
-import { vocabService } from "@/lib/vocab.service"; // 🌟 นำเข้า Service
+import { type Vocab } from "@/types";
+import { vocabService } from "@/lib/vocab.service";
 import { useSWRConfig } from "swr";
 
-// เปลี่ยนมารับค่าจาก type Vocab หลัก
 interface VocabCardProps {
     vocab: Vocab;
 }
@@ -18,17 +17,12 @@ export function VocabCard({ vocab }: VocabCardProps) {
     const [isDeleting, setIsDeleting] = useState(false);
     const { mutate } = useSWRConfig();
 
-    // 🌟 2. ฟังก์ชันจัดการเมื่อกดปุ่ม Mark as Mastered
     const handleMarkAsMastered = async () => {
         setIsUpdating(true);
         try {
-            // ส่งแค่สถานะ MASTERED ไปอัปเดต โดยใช้ id ของการ์ดใบนี้
             await vocabService.updateVocab(vocab.id, { status: "MASTERED" });
-
-            // สั่ง SWR โหลดข้อมูลใหม่ หน้าจอจะเปลี่ยนสีทันที
             mutate("/api/vocab");
         } catch (error) {
-            // โชว์แจ้งเตือนง่ายๆ เพราะเป็นแค่ปุ่ม Action เร็วๆ
             alert("Failed to update status. Please try again.");
         } finally {
             setIsUpdating(false);
@@ -36,34 +30,36 @@ export function VocabCard({ vocab }: VocabCardProps) {
     };
 
     const handleDelete = async () => {
-        // ใช้หน้าต่าง Confirm เบสิกของเบราว์เซอร์ เพื่อถามความมั่นใจก่อนลบ
         const isConfirm = window.confirm(
             `Are you sure you want to delete the word "${vocab.word}"?`,
         );
 
-        // ถ้าผู้ใช้กด Cancel (ไม่ลบ) ก็ให้จบฟังก์ชันไปเลย
         if (!isConfirm) return;
 
         setIsDeleting(true);
         try {
             await vocabService.deleteVocab(vocab.id);
-            // พอลบสำเร็จ ก็ตะโกนบอก SWR ให้ดึงข้อมูลมาใหม่ (การ์ดใบนี้จะหายไปจากหน้าจออัตโนมัติ)
             mutate("/api/vocab");
         } catch (error) {
             alert("Failed to delete word. Please try again.");
-            setIsDeleting(false); // ปิดสถานะโหลดเฉพาะตอนที่พัง (ถ้าสำเร็จการ์ดจะโดนทำลายไปเลย)
+            setIsDeleting(false);
         }
     };
 
     let statusColor = "bg-blue-500";
-    if (vocab.status === "Mastered") statusColor = "bg-green-500";
-    if (vocab.status === "Needs Review") statusColor = "bg-danger";
+    let displayStatus = "Learning";
+
+    if (vocab.status === "MASTERED") {
+        statusColor = "bg-green-500";
+        displayStatus = "Mastered";
+    } else if (vocab.status === "LEARNING" && (vocab.mistakeCount || 0) > 0) {
+        statusColor = "bg-danger";
+        displayStatus = "Needs Review";
+    }
 
     return (
         <>
             <div className="bg-background border border-muted/20 rounded-xl p-5 hover:shadow-md hover:border-primary/30 transition-all group flex flex-col justify-between min-h-[160px]">
-                {/* ... (โค้ดด้านในเหมือนเดิมทุกประการ) ... */}
-
                 <div>
                     <div className="flex justify-between items-start mb-2 gap-3">
                         <div className="flex items-baseline gap-2 flex-wrap min-w-0">
@@ -79,7 +75,8 @@ export function VocabCard({ vocab }: VocabCardProps) {
                                 className={`w-1.5 h-1.5 rounded-full ${statusColor}`}
                             ></span>
                             <span className="text-[10px] font-medium text-muted whitespace-nowrap">
-                                {vocab.status}
+                                {/* 🌟 ใช้ตัวแปร displayStatus ที่เราคำนวณไว้ */}
+                                {displayStatus}
                             </span>
                         </div>
                     </div>
@@ -99,10 +96,9 @@ export function VocabCard({ vocab }: VocabCardProps) {
                     {vocab.status !== "MASTERED" && (
                         <button
                             onClick={handleMarkAsMastered}
-                            disabled={isUpdating} // ป้องกันการกดซ้ำรัวๆ
+                            disabled={isUpdating}
                             className="text-xs font-medium text-green-600 hover:underline transition-all disabled:opacity-50 disabled:no-underline"
                         >
-                            {/* ถ้ากำลังโหลดอยู่ ให้โชว์ข้อความ Updating... */}
                             {isUpdating ? "Updating..." : "Mark as Mastered"}
                         </button>
                     )}
@@ -128,11 +124,10 @@ export function VocabCard({ vocab }: VocabCardProps) {
                         </button>
                         <button
                             onClick={handleDelete}
-                            disabled={isDeleting} // ป้องกันคนกดถังขยะรัวๆ
+                            disabled={isDeleting}
                             className={`transition-colors ${isDeleting ? "text-muted/50" : "text-muted hover:text-danger"}`}
                             aria-label="Delete Word"
                         >
-                            {/* ถ้ากำลังลบ ให้เปลี่ยนเป็นไอคอนโหลดติ้วๆ หรือแค่ทำให้ปุ่มจางลง ในที่นี้เราทำให้จางลงก็พอครับ */}
                             <svg
                                 className={`w-4 h-4 ${isDeleting ? "animate-pulse" : ""}`}
                                 fill="none"

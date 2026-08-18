@@ -37,7 +37,7 @@ export default function DashboardPage() {
     const userInitial = userName.charAt(0).toUpperCase();
 
     const realNeedsReview = vocabs
-        .filter((v) => v.status === "NEEDS_REVIEW")
+        .filter((v) => v.status === "LEARNING" && (v.mistakeCount || 0) > 0)
         .slice(0, 5);
 
     const realRecentActivity = [...vocabs]

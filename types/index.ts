@@ -10,7 +10,8 @@ export interface Vocab {
   meaning: string;
   partOfSpeech: string;
   example?: string | null;
-  status: string;
+  status: 'LEARNING' | 'MASTERED';
+  mistakeCount: number;
   createdAt: string;
   userId: string;
   updatedAt: string;
