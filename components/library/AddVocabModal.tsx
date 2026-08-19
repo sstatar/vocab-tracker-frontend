@@ -1,6 +1,7 @@
 "use client";
 
-import { useAddVocab } from "@/hooks/useAddVocab"; // ดึง Hook ที่เราเพิ่งสร้างมาใช้
+import { useAddVocab } from "@/hooks/useAddVocab";
+import { createPortal } from "react-dom";
 
 interface AddVocabModalProps {
     isOpen: boolean;
@@ -8,7 +9,6 @@ interface AddVocabModalProps {
 }
 
 export function AddVocabModal({ isOpen, onClose }: AddVocabModalProps) {
-    // เรียกใช้ Hook พร้อมส่งฟังก์ชัน onClose เข้าไปให้มันเรียกตอนเซฟเสร็จ
     const {
         formData,
         isLoading,
@@ -20,10 +20,11 @@ export function AddVocabModal({ isOpen, onClose }: AddVocabModalProps) {
 
     if (!isOpen) return null;
 
-    return (
+    if (typeof document === "undefined") return null;
+
+    const modalContent = (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm transition-opacity">
             <div className="bg-background w-full max-w-md rounded-[2rem] p-6 sm:p-8 shadow-2xl border border-muted/20 relative animate-in fade-in zoom-in-95 duration-200">
-                {/* ใช้ handleCancel แทน onClose ธรรมดา เพื่อเคลียร์ค่าก่อนปิด */}
                 <button
                     onClick={handleCancel}
                     className="absolute top-6 right-6 text-muted hover:text-danger transition-colors bg-muted/10 hover:bg-danger/10 p-2 rounded-full"
@@ -64,7 +65,7 @@ export function AddVocabModal({ isOpen, onClose }: AddVocabModalProps) {
                             value={formData.word}
                             onChange={handleChange}
                             placeholder="e.g., Abundant"
-                            className="w-full px-4 py-3 bg-muted/5 border border-muted/20 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
+                            className="w-full px-4 py-3 bg-muted/5 border border-muted/20 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all text-foreground"
                             required
                         />
                     </div>
@@ -80,7 +81,7 @@ export function AddVocabModal({ isOpen, onClose }: AddVocabModalProps) {
                                 value={formData.meaning}
                                 onChange={handleChange}
                                 placeholder="e.g., มากมาย"
-                                className="w-full px-4 py-3 bg-muted/5 border border-muted/20 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
+                                className="w-full px-4 py-3 bg-muted/5 border border-muted/20 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all text-foreground"
                                 required
                             />
                         </div>
@@ -93,7 +94,7 @@ export function AddVocabModal({ isOpen, onClose }: AddVocabModalProps) {
                                 name="partOfSpeech"
                                 value={formData.partOfSpeech}
                                 onChange={handleChange}
-                                className="w-full px-4 py-3 bg-muted/5 border border-muted/20 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all text-foreground"
+                                className="w-full px-4 py-3 bg-background border border-muted/20 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all text-foreground"
                             >
                                 <option value="n.">Noun (n.)</option>
                                 <option value="v.">Verb (v.)</option>
@@ -113,7 +114,7 @@ export function AddVocabModal({ isOpen, onClose }: AddVocabModalProps) {
                             onChange={handleChange}
                             placeholder="The country has an abundant supply of natural gas."
                             rows={3}
-                            className="w-full px-4 py-3 bg-muted/5 border border-muted/20 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all resize-none"
+                            className="w-full px-4 py-3 bg-muted/5 border border-muted/20 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all resize-none text-foreground"
                         ></textarea>
                     </div>
 
@@ -138,4 +139,6 @@ export function AddVocabModal({ isOpen, onClose }: AddVocabModalProps) {
             </div>
         </div>
     );
+
+    return createPortal(modalContent, document.body);
 }

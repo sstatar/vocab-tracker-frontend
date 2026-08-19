@@ -89,7 +89,7 @@ export function EditVocabModal({
                                 name="partOfSpeech"
                                 value={formData.partOfSpeech}
                                 onChange={handleChange}
-                                className="w-full px-4 py-3 bg-muted/5 border border-muted/20 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all text-foreground"
+                                className="w-full px-4 py-3 bg-background border border-muted/20 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all text-foreground"
                             >
                                 <option value="n.">Noun (n.)</option>
                                 <option value="v.">Verb (v.)</option>
