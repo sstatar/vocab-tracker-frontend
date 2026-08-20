@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import useSWR from "swr";
 import { userService, UpdateProfileData } from "@/lib/user.service";
@@ -5,12 +6,23 @@ import { userService, UpdateProfileData } from "@/lib/user.service";
 export function useProfileSettings() {
     const { data: profile, isLoading: isFetching, mutate } = useSWR(
         "profile",
-        userService.getProfile
+        userService.getProfile,
+        {
+            revalidateOnFocus: false,
+            errorRetryCount: 3,
+        }
     );
 
-    const form = useForm<UpdateProfileData>({
-        values: profile,
-    });
+    const form = useForm<UpdateProfileData>();
+
+    useEffect(() => {
+        if (profile) {
+            form.reset({
+                name: profile.name,
+                dailyGoal: profile.dailyGoal,
+            });
+        }
+    }, [profile, form]);
 
     const onSubmit = async (data: UpdateProfileData) => {
         try {

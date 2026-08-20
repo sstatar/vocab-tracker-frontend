@@ -8,12 +8,14 @@ export interface ChangePasswordData {
   newPassword: string;
 }
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api";
+
 export const userService = {
   getProfile: async () => {
     const token = localStorage.getItem("token");
     if (!token) throw new Error("No token found");
 
-    const response = await fetch("http://localhost:8000/api/users/me", {
+    const response = await fetch(`${API_URL}/users/me`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -28,7 +30,7 @@ export const userService = {
     const token = localStorage.getItem("token");
     if (!token) throw new Error("No token found");
 
-    const response = await fetch("http://localhost:8000/api/users/me", {
+    const response = await fetch(`${API_URL}/users/me`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -45,7 +47,7 @@ export const userService = {
     const token = localStorage.getItem("token");
     if (!token) throw new Error("No token found");
 
-    const response = await fetch("http://localhost:8000/api/users/me/password", {
+    const response = await fetch(`${API_URL}/users/me/password`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -65,7 +67,7 @@ export const userService = {
     const token = localStorage.getItem("token");
     if (!token) throw new Error("No token found");
 
-    const response = await fetch("http://localhost:8000/api/users/me", {
+    const response = await fetch(`${API_URL}/users/me`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${token}`,
