@@ -11,15 +11,14 @@ import {
 import Link from "next/link";
 import { Settings, LogOut, Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
-import useSWR from "swr";
-import { userService } from "@/lib/user.service";
+import { useProfile } from "@/hooks/useProfile";
 import { useLogout } from "@/hooks/useLogout";
 
 export function UserMenu() {
     const { theme, setTheme } = useTheme();
     const { handleLogout } = useLogout();
 
-    const { data: profile } = useSWR("profile", userService.getProfile);
+    const { profile } = useProfile();
     const displayName = profile?.name || "Student";
 
     return (
