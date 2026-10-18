@@ -1,4 +1,4 @@
-"use client"; // เพิ่มบรรทัดนี้ เพราะเรากำลังใช้ useState
+"use client";
 
 import { useState } from "react";
 import { AddVocabModal } from "./AddVocabModal";
@@ -13,7 +13,6 @@ export function LibraryHeader({
     searchQuery,
     onSearchChange,
 }: LibraryHeaderProps) {
-    // สร้าง State สำหรับเปิด/ปิด Modal (ค่าเริ่มต้นคือปิด = false)
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isPracticeModalOpen, setIsPracticeModalOpen] = useState(false);
 
@@ -28,7 +27,6 @@ export function LibraryHeader({
                 </div>
 
                 <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
-                    {/* Search Bar */}
                     <div className="relative w-full md:w-64">
                         <svg
                             className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted"
@@ -45,14 +43,13 @@ export function LibraryHeader({
                         </svg>
                         <input
                             type="text"
-                            placeholder="Search words, meanings..." // แอบเปลี่ยน placeholder นิดนึงให้ผู้ใช้รู้ว่าหาความหมายได้ด้วย
-                            value={searchQuery} // 🌟 3. ผูกค่า State
-                            onChange={(e) => onSearchChange(e.target.value)} // 🌟 4. ดักจับตอนพิมพ์
+                            placeholder="Search words, meanings..."
+                            value={searchQuery}
+                            onChange={(e) => onSearchChange(e.target.value)}
                             className="w-full pl-9 pr-4 py-2 bg-background border border-muted/20 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-primary transition-all"
                         />
                     </div>
 
-                    {/* ปุ่ม Practice */}
                     <button
                         onClick={() => setIsPracticeModalOpen(true)}
                         className="flex-1 md:flex-none flex items-center justify-center gap-2 bg-background border-2 border-primary text-primary px-4 py-2 rounded-lg hover:bg-primary/5 transition-colors text-sm font-bold shadow-sm"
@@ -79,7 +76,6 @@ export function LibraryHeader({
                         Practice
                     </button>
 
-                    {/* ปุ่ม Add New Word (กดแล้วเปลี่ยน State เป็น true) */}
                     <button
                         onClick={() => setIsModalOpen(true)}
                         className="bg-primary text-white p-2.5 rounded-lg hover:bg-primary-hover transition-colors shadow-sm flex-shrink-0"
@@ -101,7 +97,6 @@ export function LibraryHeader({
                 </div>
             </div>
 
-            {/* เรียกใช้งาน Modal พร้อมส่ง props ควบคุมการเปิด/ปิดไปให้ */}
             {isModalOpen && (
                 <AddVocabModal
                     isOpen={isModalOpen}
@@ -109,7 +104,6 @@ export function LibraryHeader({
                 />
             )}
 
-            {/* เรียกใช้งาน Modal Practice */}
             {isPracticeModalOpen && (
                 <PracticeConfigModal
                     isOpen={isPracticeModalOpen}

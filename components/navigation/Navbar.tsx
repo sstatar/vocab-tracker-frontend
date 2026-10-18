@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { UserMenu } from "./ui/UserMenu";
+import { UserMenu } from "./UserMenu";
 import { useLogout } from "@/hooks/useLogout";
 import { useAuth } from "@/hooks/useAuth";
 

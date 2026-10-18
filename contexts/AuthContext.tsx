@@ -31,7 +31,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         mutate(() => true, undefined, { revalidate: false });
     }, []);
 
-
     useEffect(() => {
         const handleSessionExpiredEvent = () => {
             endSession();

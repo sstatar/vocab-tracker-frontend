@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useLogin } from "@/hooks/useLogin";
 
 export default function LoginPage() {
-    // ดึงทุกอย่างมาจาก Custom Hook
+
     const { formData, error, isLoading, handleChange, handleSubmit } =
         useLogin();
 
@@ -20,7 +20,6 @@ export default function LoginPage() {
                     </p>
                 </div>
 
-                {/* แสดง Error */}
                 {error && (
                     <div className="p-3 text-sm text-danger bg-danger/10 border border-danger/20 rounded-lg text-center">
                         {error}

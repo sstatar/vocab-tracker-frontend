@@ -75,7 +75,6 @@ export function VocabCard({ vocab }: VocabCardProps) {
                                 className={`w-1.5 h-1.5 rounded-full ${statusColor}`}
                             ></span>
                             <span className="text-[10px] font-medium text-muted whitespace-nowrap">
-                                {/* 🌟 ใช้ตัวแปร displayStatus ที่เราคำนวณไว้ */}
                                 {displayStatus}
                             </span>
                         </div>

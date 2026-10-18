@@ -1,10 +1,10 @@
-"use client"; // ยังต้องมีอยู่นะครับ เพราะ Custom Hook ของเราใช้ State อยู่เบื้องหลัง
+"use client";
 
 import Link from "next/link";
-import { useRegister } from "@/hooks/useRegister"; // ดึง Custom Hook เข้ามา
+import { useRegister } from "@/hooks/useRegister";
 
 export default function RegisterPage() {
-    // บรรทัดพระเอก! ดึงทุกอย่างที่ต้องใช้จาก Hook มาเตรียมไว้
+
     const { formData, error, isLoading, handleChange, handleSubmit } =
         useRegister();
 
@@ -20,14 +20,12 @@ export default function RegisterPage() {
                     </p>
                 </div>
 
-                {/* ถ้ามี Error ก็เอาตัวแปร error มาโชว์ตรงนี้ */}
                 {error && (
                     <div className="p-3 text-sm text-danger bg-danger/10 border border-danger/20 rounded-lg text-center">
                         {error}
                     </div>
                 )}
 
-                {/* ผูก handleSubmit เข้ากับฟอร์ม */}
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div>
                         <label className="block text-sm font-medium mb-1">
@@ -36,8 +34,8 @@ export default function RegisterPage() {
                         <input
                             type="text"
                             name="name"
-                            value={formData.name} // ดึงค่าจาก state
-                            onChange={handleChange} // ส่ง action ไปให้ hook จัดการ
+                            value={formData.name}
+                            onChange={handleChange}
                             placeholder="John Doe"
                             className="w-full px-4 py-2 border border-muted/30 rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
                             required
@@ -92,7 +90,7 @@ export default function RegisterPage() {
 
                     <button
                         type="submit"
-                        disabled={isLoading} // ถ้า Hook บอกว่ากำลังโหลด ก็ปิดปุ่มไป
+                        disabled={isLoading}
                         className="w-full py-2.5 mt-4 bg-primary text-white rounded-lg hover:bg-primary-hover transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         {isLoading ? "Signing up..." : "Sign Up"}

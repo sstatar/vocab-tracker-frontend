@@ -1,7 +1,6 @@
-// src/components/library/PracticeConfigModal.tsx
 "use client";
 
-import { useRouter } from "next/navigation"; // 🌟 นำเข้า useRouter สำหรับเปลี่ยนหน้า
+import { useRouter } from "next/navigation";
 
 interface PracticeConfigModalProps {
     isOpen: boolean;
@@ -16,16 +15,14 @@ export function PracticeConfigModal({
 
     if (!isOpen) return null;
 
-    // ฟังก์ชันสำหรับเปลี่ยนหน้า พร้อมส่ง mode ไปที่ URL
     const handleSelectMode = (mode: string) => {
-        onClose(); // ปิด Modal ก่อน
-        router.push(`/practice?mode=${mode}`); // พาไปหน้า practice พร้อม mode
+        onClose();
+        router.push(`/practice?mode=${mode}`);
     };
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm transition-opacity">
             <div className="bg-background w-full max-w-md rounded-[2rem] p-6 sm:p-8 shadow-2xl border border-muted/20 relative animate-in fade-in zoom-in-95 duration-200">
-                {/* ปุ่มปิด Modal */}
                 <button
                     onClick={onClose}
                     className="absolute top-6 right-6 text-muted hover:text-danger transition-colors bg-muted/10 hover:bg-danger/10 p-2 rounded-full"
@@ -49,7 +46,6 @@ export function PracticeConfigModal({
                     Choose Practice Mode
                 </h2>
 
-                {/* ตัวเลือกโหมดการซ้อม (ทำเป็นปุ่มใหญ่ๆ เรียงกัน) */}
                 <div className="space-y-3">
                     <button
                         onClick={() => handleSelectMode("needs_review")}

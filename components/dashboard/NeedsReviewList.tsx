@@ -64,7 +64,6 @@ export function NeedsReviewList({ items }: NeedsReviewListProps) {
                             </div>
                         ) : null}
 
-                        {/* ไอคอนลูกศร */}
                         <div className="w-8 h-8 rounded-full border border-muted/20 flex items-center justify-center text-muted group-hover:bg-primary group-hover:text-white transition-colors shrink-0">
                             <svg
                                 className="w-4 h-4"

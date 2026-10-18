@@ -1,5 +1,3 @@
-// src/lib/auth.service.ts
-
 export interface RegisterData {
   name: string;
   email: string;
@@ -31,8 +29,6 @@ export const authService = {
   },
 
   login: async (credentials: LoginData) => {
-    const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api";
-
     const response = await fetch(`${API_URL}/auth/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -46,7 +42,5 @@ export const authService = {
     }
 
     return data;
-  }
-
-
+  },
 };

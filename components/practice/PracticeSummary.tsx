@@ -11,7 +11,7 @@ export function PracticeSummary({ totalWords, rememberedCount }: PracticeSummary
       <div className="w-20 h-20 bg-primary/10 text-primary rounded-full flex items-center justify-center mx-auto text-4xl shadow-inner">
         🎉
       </div>
-      
+
       <div>
         <h2 className="text-3xl font-extrabold text-foreground">Session Completed!</h2>
         <p className="text-muted mt-2 text-sm">Great job reviewing your vocabulary today.</p>
@@ -30,8 +30,8 @@ export function PracticeSummary({ totalWords, rememberedCount }: PracticeSummary
       </div>
 
       <div className="pt-2">
-        <Link 
-          href="/library" 
+        <Link
+          href="/library"
           className="block w-full py-4 bg-primary text-white font-bold rounded-2xl hover:bg-primary-hover shadow-lg transition-all"
         >
           Back to Library

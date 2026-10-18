@@ -12,8 +12,8 @@ export function PracticeHeader({ currentIndex, totalWords, isCompleted }: Practi
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <Link 
-          href="/library" 
+        <Link
+          href="/library"
           className="flex items-center gap-2 text-muted hover:text-foreground transition-colors font-medium text-sm"
         >
           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -27,8 +27,8 @@ export function PracticeHeader({ currentIndex, totalWords, isCompleted }: Practi
       </div>
 
       <div className="w-full bg-muted/10 rounded-full h-2">
-        <div 
-          className="bg-primary h-2 rounded-full transition-all duration-300" 
+        <div
+          className="bg-primary h-2 rounded-full transition-all duration-300"
           style={{ width: `${isCompleted ? 100 : progressPercent}%` }}
         ></div>
       </div>
