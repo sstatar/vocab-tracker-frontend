@@ -1,28 +1,22 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect} from "react";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/hooks/useAuth";
 
 export function ProtectedRoute({ children }: { children: React.ReactNode }) {
+    const { isAuthenticated, isInitializing } = useAuth();
     const router = useRouter();
 
-    const [isLoading, setIsLoading] = useState(true);
-
     useEffect(() => {
-        const timer = setTimeout(() => {
-            const token = localStorage.getItem("token");
 
-            if (!token) {
+            if (!isAuthenticated && !isInitializing) {
                 router.replace("/login");
-            } else {
-                setIsLoading(false);
-            }
-        }, 0);
+            } 
 
-        return () => clearTimeout(timer);
-    }, [router]);
+    }, [router , isAuthenticated, isInitializing]);
 
-    if (isLoading) {
+    if (isInitializing || !isAuthenticated) {
         return (
             <div className="flex min-h-screen items-center justify-center bg-background">
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>

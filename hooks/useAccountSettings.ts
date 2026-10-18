@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { userService, ChangePasswordData } from "@/lib/user.service";
+import { useAuth } from "./useAuth";
 
 export interface AccountFormValues extends ChangePasswordData {
     confirmPassword: string;
@@ -9,6 +10,7 @@ export interface AccountFormValues extends ChangePasswordData {
 
 export function useAccountSettings() {
     const router = useRouter();
+    const { endSession } = useAuth();
 
     const [apiError, setApiError] = useState("");
     const [success, setSuccess] = useState("");
@@ -54,11 +56,10 @@ export function useAccountSettings() {
             setIsDeleting(true);
             await userService.deleteAccount();
 
-            localStorage.removeItem("token");
+            endSession();
             alert("Your account has been deleted.");
             router.push("/login");
-        } catch (err) { // 🌟 เอา : any ออก
-            // 🌟 เช็ก Type ให้ถูกต้องตามหลัก TypeScript
+        } catch (err) {
             if (err instanceof Error) {
                 alert(err.message);
             } else {
