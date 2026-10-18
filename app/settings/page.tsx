@@ -23,13 +23,12 @@ export default function SettingsPage() {
                 </div>
 
                 <div className="flex flex-col md:flex-row gap-8 lg:gap-12">
-                    {/* Component 1: เมนูด้านซ้าย */}
+
                     <SettingsSidebar
                         activeTab={activeTab}
                         setActiveTab={setActiveTab}
                     />
 
-                    {/* Component 2: เนื้อหาด้านขวา */}
                     <div className="flex-1 p-8 rounded-[2rem] border border-foreground/10 bg-background shadow-lg">
                         {activeTab === "profile" && <ProfileSettingsTab />}
                         {activeTab === "account" && <AccountSettingsTab />}

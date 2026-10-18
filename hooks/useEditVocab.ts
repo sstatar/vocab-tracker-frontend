@@ -1,4 +1,4 @@
-import { useState } from "react"; // ลบ useEffect ออกจาก import ด้วย
+import { useState } from "react";
 import { vocabService, type UpdateVocabData } from "@/lib/vocab.service";
 import { useSWRConfig } from "swr";
 import { type Vocab } from "@/types";
@@ -6,7 +6,6 @@ import { type Vocab } from "@/types";
 export function useEditVocab(initialVocab: Vocab, onSuccess: () => void) {
   const { mutate } = useSWRConfig();
 
-  // เซ็ตค่าเริ่มต้นครั้งเดียวจบ! ไม่ต้องมี useEffect มาคอยอัปเดตแล้ว
   const [formData, setFormData] = useState<UpdateVocabData>({
     word: initialVocab.word,
     meaning: initialVocab.meaning,
@@ -23,7 +22,6 @@ export function useEditVocab(initialVocab: Vocab, onSuccess: () => void) {
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    /* โค้ดเซฟข้อมูลเหมือนเดิมเป๊ะ */
     e.preventDefault();
     setError("");
     setIsLoading(true);

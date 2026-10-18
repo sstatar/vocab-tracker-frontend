@@ -5,7 +5,7 @@ export interface RecentActivityItem {
 }
 
 interface RecentActivityListProps {
-  items: RecentActivityItem[]; // 2. เปลี่ยนมาใช้ Type ตัวใหม่
+  items: RecentActivityItem[];
 }
 
 export function RecentActivityList({ items }: RecentActivityListProps) {

@@ -1,4 +1,3 @@
-// src/hooks/useVocabs.ts
 import useSWR from "swr";
 import { type Vocab } from "@/types";
 import { vocabService } from "@/lib/vocab.service";

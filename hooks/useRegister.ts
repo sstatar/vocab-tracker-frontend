@@ -1,4 +1,3 @@
-// src/hooks/useRegister.ts
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { authService } from "@/lib/auth.service";
@@ -31,7 +30,6 @@ export function useRegister() {
 
     try {
       setIsLoading(true);
-      // เรียกใช้ Service ที่จัดการ URL ให้เราเรียบร้อยแล้ว
       await authService.register({
         name: formData.name,
         email: formData.email,
@@ -40,13 +38,12 @@ export function useRegister() {
 
       alert("Registration successful! Please login.");
       router.push("/login");
-    } catch (err) { // 1. ลบ : any ออก (TypeScript จะมองมันเป็น unknown อัตโนมัติ)
+    } catch (err) {
 
-      // 2. เช็กก่อนว่าสิ่งที่พังออกมา เป็นออบเจกต์ประเภท Error ใช่หรือไม่
       if (err instanceof Error) {
-        setError(err.message); // ถ้าใช่ ถึงจะเรียกใช้ .message ได้ปลอดภัย
+        setError(err.message);
       } else {
-        setError("An unexpected error occurred"); // เผื่อกรณีที่พังเป็นอย่างอื่น (เช่น พังเป็นข้อความเฉยๆ)
+        setError("An unexpected error occurred");
       }
 
     } finally {

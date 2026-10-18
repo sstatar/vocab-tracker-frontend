@@ -1,4 +1,3 @@
-/** Read responses from protected API endpoints shared by user and vocab services. */
 export async function handleResponse(response: Response, fallbackMessage = "Request failed") {
     if (response.status === 401) {
         if (typeof window !== "undefined") {
@@ -21,7 +20,7 @@ export async function handleResponse(response: Response, fallbackMessage = "Requ
         throw new Error(message);
     }
 
-    // Preserve the vocab service's existing no-content success result.
+    // A 204 response has no body to parse.
     if (response.status === 204) return true;
     return response.json();
 }
