@@ -1,3 +1,5 @@
+import { handleResponse } from "./api";
+
 export interface UpdateProfileData {
   name?: string;
   dailyGoal?: number;
@@ -22,8 +24,7 @@ export const userService = {
       },
     });
 
-    if (!response.ok) throw new Error("Failed to fetch profile");
-    return response.json();
+    return handleResponse(response, "Failed to fetch profile");
   },
 
   updateProfile: async (data: UpdateProfileData) => {
@@ -39,8 +40,7 @@ export const userService = {
       body: JSON.stringify(data),
     });
 
-    if (!response.ok) throw new Error("Failed to update profile");
-    return response.json();
+    return handleResponse(response, "Failed to update profile");
   },
 
   changePassword: async (data: ChangePasswordData) => {
@@ -56,11 +56,7 @@ export const userService = {
       body: JSON.stringify(data),
     });
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.error || "Failed to change password");
-    }
-    return response.json();
+    return handleResponse(response, "Failed to change password");
   },
 
   deleteAccount: async () => {
@@ -74,11 +70,6 @@ export const userService = {
       },
     });
 
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.message || errorData.error || "Failed to delete account");
-    }
-
-    return response.json();
+    return handleResponse(response, "Failed to delete account");
   },
 };

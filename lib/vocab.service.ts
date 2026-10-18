@@ -1,3 +1,4 @@
+import { handleResponse } from "./api";
 import { type Vocab } from "@/types";
 
 export interface CreateVocabData {
@@ -18,23 +19,6 @@ export interface UpdateVocabData {
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api";
 
-const handleResponse = async (response: Response) => {
-    if (!response.ok) {
-        if (response.status === 401) {
-            localStorage.removeItem("token");
-            window.location.href = "/login";
-            throw new Error("Session expired. Please login again.");
-        }
-
-        const data = await response.json().catch(() => ({}));
-        throw new Error(data.error || "Request failed");
-    }
-
-    if (response.status === 204) return true;
-
-    return response.json();
-};
-
 export const vocabService = {
     getAllVocabs: async (): Promise<Vocab[]> => {
 
@@ -52,7 +36,7 @@ export const vocabService = {
             },
         });
 
-        return handleResponse(response);
+        return handleResponse(response, "Failed to fetch vocabulary");
     },
 
     createVocab: async (vocabData: CreateVocabData) => {
@@ -68,7 +52,7 @@ export const vocabService = {
             body: JSON.stringify(vocabData),
         });
 
-        return handleResponse(response);
+        return handleResponse(response, "Failed to create vocabulary");
     },
 
     updateVocab: async (id: string, vocabData: UpdateVocabData) => {
@@ -84,7 +68,7 @@ export const vocabService = {
             body: JSON.stringify(vocabData),
         });
 
-        return handleResponse(response);
+        return handleResponse(response, "Failed to update vocabulary");
     },
 
     deleteVocab: async (id: string) => {
@@ -98,7 +82,7 @@ export const vocabService = {
             },
         });
 
-        return handleResponse(response);
+        return handleResponse(response, "Failed to delete vocabulary");
     },
 
     getVocabStats: async () => {
@@ -113,7 +97,7 @@ export const vocabService = {
             },
         });
 
-        return handleResponse(response);
+        return handleResponse(response, "Failed to fetch vocabulary statistics");
     },
 
     reviewVocab: async (id: string, status: "MASTERED" | "LEARNING", isMistake: boolean = false) => {
@@ -129,10 +113,6 @@ export const vocabService = {
             body: JSON.stringify({ status, isMistake }),
         });
 
-        if (!response.ok) {
-            throw new Error("Failed to review vocabulary");
-        }
-
-        return response.json();
+        return handleResponse(response, "Failed to review vocabulary");
     },
 };

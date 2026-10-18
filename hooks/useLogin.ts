@@ -1,15 +1,18 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { authService } from "@/lib/auth.service"; // ปรับ path ให้ตรงกับโฟลเดอร์ของคุณนะครับ
+import { authService } from "@/lib/auth.service";
+import { useAuth } from "./useAuth";
 
 export function useLogin() {
+
+  const { startSession } = useAuth();
   const router = useRouter();
-  
+
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
-  
+
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -23,13 +26,10 @@ export function useLogin() {
     setIsLoading(true);
 
     try {
-      // 1. ส่งข้อมูลไป Login
       const data = await authService.login(formData);
 
-      // 2. ถ้าสำเร็จ Backend จะส่ง token กลับมา ให้เราเซฟเก็บไว้ในเครื่อง
-      localStorage.setItem("token", data.token);
+      startSession(data.token);
 
-      // 3. พาผู้ใช้ไปหน้า Dashboard แบบหล่อๆ
       router.push("/");
 
     } catch (err) {

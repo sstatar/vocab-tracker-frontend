@@ -1,9 +1,11 @@
 import useSWR from "swr";
 import { vocabService } from "@/lib/vocab.service";
+import { useAuth } from "@/hooks/useAuth";
 
 export function useVocabStats() {
+    const { isAuthenticated } = useAuth();
     const { data, error, isLoading, mutate } = useSWR(
-        "/api/vocab/stats",
+        isAuthenticated ? "/api/vocab/stats" : null,
         vocabService.getVocabStats
     );
 

@@ -1,16 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { UserMenu } from "./ui/UserMenu";
 import { useLogout } from "@/hooks/useLogout";
+import { useAuth } from "@/hooks/useAuth";
 
 export function Navbar() {
-    const pathname = usePathname();
-    const isAuthPage = pathname === "/login" || pathname === "/register";
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const { handleLogout } = useLogout();
+    const { isAuthenticated } = useAuth();
 
     return (
         <nav className="border-b border-muted/20 bg-background transition-colors duration-300">
@@ -25,7 +24,7 @@ export function Navbar() {
                         </Link>
                     </div>
 
-                    {!isAuthPage && (
+                    {isAuthenticated && (
                         <>
                             <div className="hidden md:flex space-x-8">
                                 <Link
@@ -81,7 +80,7 @@ export function Navbar() {
                 </div>
             </div>
 
-            {!isAuthPage && isMenuOpen && (
+            {isAuthenticated && isMenuOpen && (
                 <div className="md:hidden border-t border-muted/20 bg-background px-4 pt-2 pb-4 space-y-2 shadow-lg">
                     <Link
                         href="/"

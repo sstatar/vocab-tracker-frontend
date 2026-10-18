@@ -22,7 +22,7 @@ export function VocabCard({ vocab }: VocabCardProps) {
         try {
             await vocabService.updateVocab(vocab.id, { status: "MASTERED" });
             mutate("/api/vocab");
-        } catch (error) {
+        } catch {
             alert("Failed to update status. Please try again.");
         } finally {
             setIsUpdating(false);
@@ -40,7 +40,7 @@ export function VocabCard({ vocab }: VocabCardProps) {
         try {
             await vocabService.deleteVocab(vocab.id);
             mutate("/api/vocab");
-        } catch (error) {
+        } catch {
             alert("Failed to delete word. Please try again.");
             setIsDeleting(false);
         }
